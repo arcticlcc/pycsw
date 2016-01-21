@@ -33,6 +33,7 @@ import logging
 import os
 from sqlalchemy import create_engine, asc, desc, func, __version__, select
 from sqlalchemy.sql import text
+from sqlalchemy.schema import PrimaryKeyConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import create_session
 from pycsw import util
@@ -106,8 +107,9 @@ class Repository(object):
         schema, table = util.sniff_table(table)
 
         self.dataset = type('dataset', (base,),
-        dict(__tablename__=table,__table_args__={'autoload': True,
-                                                 'schema': schema}))
+        dict(__tablename__=table,__table_args__= (PrimaryKeyConstraint('identifier'),
+                                                {'autoload': True,
+                                                 'schema': schema,})))
 
         self.dbtype = self.engine.name
 
